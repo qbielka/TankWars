@@ -13,11 +13,11 @@ public class Board {
     private static final char TILE_FOG = '~';
     private static final char TILE_HIT = 'X';
     private static final char TILE_TANK = 'A';
-    public static final int TETROID_SIZE = 4;
-    public static final int UP = 0;
-    public static final int RIGHT = 1;
-    public static final int DOWN = 2;
-    public static final int LEFT = 3;
+    private static final int TETROID_SIZE = 4;
+    private static final int UP = 0;
+    private static final int RIGHT = 1;
+    private static final int DOWN = 2;
+    private static final int LEFT = 3;
     private char[][] board;
 
     // sets all tiles to unknown
@@ -32,44 +32,53 @@ public class Board {
     }
     public static Board makeSecretBoard(int numTanks){
         Board toRet= new Board();
-
+        // initialize to blank
         for(int row = 0; row < BOARD_SIZE; row ++){
             for(int column = 0; column < BOARD_SIZE; column ++){
                 toRet.board[row][column] = TILE_BLANK;
             }
         }
         if(numTanks > UPPER_TANK_THRESHOLD){
-            numTanks = 25;
+            numTanks = UPPER_TANK_THRESHOLD;
         }
+        // make tanks drive onto field
         List<Tank> mytanks = new ArrayList<>();// needs something extra
-        for(int tankNumber = 0; tankNumber < numTanks; tankNumber++){
+        for(int tankNumber = 0; tankNumber < numTanks; tankNumber++) {
             List<coordinate> aTank = new ArrayList<>();
-            int pStartCol = (int)(Math.random()*10);
-            int pStartRow = (int)(Math.random()*10);
+            int pStartCol = (int) (Math.random() * 10);
+            int pStartRow = (int) (Math.random() * 10);
             // yes this while loop may be infinite with >15 tanks
-            while(toRet.board[pStartRow][pStartCol] == TILE_TANK || !floodFillCheck(toRet.board, pStartRow, pStartCol)){
-                pStartCol = (int)(Math.random()*10);
-                pStartRow = (int)(Math.random()*10);
+            while (toRet.board[pStartRow][pStartCol] == TILE_TANK || !floodFillCheck(toRet.board, pStartRow, pStartCol)) {
+                pStartCol = (int) (Math.random() * 10);
+                pStartRow = (int) (Math.random() * 10);
             }
             Tank toAdd = new Tank(aTank);
-            toRet.board[pStartRow][pStartCol]=(char)(TILE_TANK+tankNumber);
-
+            toRet.board[pStartRow][pStartCol] = (char) (TILE_TANK + tankNumber);
+            aTank.add(new coordinate(pStartRow,pStartCol));
             int currRow = pStartRow;
             int currCol = pStartCol;
-            int randomDirection = (int)(Math.random()*4);
-            if(randomDirection == UP){
-                if(pStartCol+1<BOARD_SIZE){
+            int tetroidSize=0;
+            while (tetroidSize < TETROID_SIZE) {
+                int randomDirection = (int) (Math.random() * 4);
+                if (randomDirection == UP) {
+                    if ((currCol + 1) < BOARD_SIZE && toRet.board[currRow][currCol + 1] == TILE_BLANK) {
 
+                        tetroidSize++;
+                    }
+                } else if (randomDirection == RIGHT) {
+                    if ((currRow + 1) < BOARD_SIZE && toRet.board[currRow + 1][currCol] == TILE_BLANK) {
+                        tetroidSize++;
+                    }
+                } else if (randomDirection == DOWN) {
+                    if ((currCol - 1) > 0 && toRet.board[currRow][currCol - 1] == TILE_BLANK) {
+                        tetroidSize++;
+                    }
+                } else if (randomDirection == LEFT) {
+                    if ((currRow - 1) > 0 && toRet.board[currRow - 1][currCol] == TILE_BLANK) {
+                        tetroidSize++;
+                    }
                 }
             }
-            else if (randomDirection == RIGHT){
-
-            }
-            else if (randomDirection == DOWN){
-
-            }
-            else if (randomDirection == LEFT)
-
             mytanks.add(toAdd);
         }
         return toRet;
