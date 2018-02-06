@@ -1,3 +1,6 @@
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Board maintains a state of the game
  */
@@ -6,36 +9,108 @@ public class Board {
     private static final int UPPER_TANK_THRESHOLD = 25;
     private static final int LOWER_TNK_THRESHOLD = 15;
     private static final int MIDDLE_TANK_THRESHOLD = 20;
-    Tile[][] board;
+    private static final char TILE_BLANK = ' ';
+    private static final char TILE_FOG = '~';
+    private static final char TILE_HIT = 'X';
+    private static final char TILE_TANK = 'A';
+    public static final int TETROID_SIZE = 4;
+    public static final int UP = 0;
+    public static final int RIGHT = 1;
+    public static final int DOWN = 2;
+    public static final int LEFT = 3;
+    private char[][] board;
+
     // sets all tiles to unknown
     public static Board makeDisplayBoard(){
         Board toRet= new Board();
         for(int row = 0; row < BOARD_SIZE; row ++){
             for(int column = 0; column < BOARD_SIZE; column ++){
-                toRet.board[row][column] = Tile.UNKNOWN;
+                toRet.board[row][column] = TILE_FOG;
             }
         }
         return toRet;
     }
     public static Board makeSecretBoard(int numTanks){
         Board toRet= new Board();
+
         for(int row = 0; row < BOARD_SIZE; row ++){
             for(int column = 0; column < BOARD_SIZE; column ++){
-                toRet.board[row][column] = Tile.BLANK;
+                toRet.board[row][column] = TILE_BLANK;
             }
         }
         if(numTanks > UPPER_TANK_THRESHOLD){
             numTanks = 25;
         }
-        if(numTanks < LOWER_TNK_THRESHOLD){
+        List<Tank> mytanks = new ArrayList<>();// needs something extra
+        for(int tankNumber = 0; tankNumber < numTanks; tankNumber++){
+            List<coordinate> aTank = new ArrayList<>();
+            int pStartCol = (int)(Math.random()*10);
+            int pStartRow = (int)(Math.random()*10);
+            // yes this while loop may be infinite with >15 tanks
+            while(toRet.board[pStartRow][pStartCol] == TILE_TANK || !floodFillCheck(toRet.board, pStartRow, pStartCol)){
+                pStartCol = (int)(Math.random()*10);
+                pStartRow = (int)(Math.random()*10);
+            }
+            Tank toAdd = new Tank(aTank);
+            toRet.board[pStartRow][pStartCol]=(char)(TILE_TANK+tankNumber);
 
-        }
-        else if (numTanks < MIDDLE_TANK_THRESHOLD){
+            int currRow = pStartRow;
+            int currCol = pStartCol;
+            int randomDirection = (int)(Math.random()*4);
+            if(randomDirection == UP){
+                if(pStartCol+1<BOARD_SIZE){
 
-        }
-        else{
+                }
+            }
+            else if (randomDirection == RIGHT){
 
+            }
+            else if (randomDirection == DOWN){
+
+            }
+            else if (randomDirection == LEFT)
+
+            mytanks.add(toAdd);
         }
         return toRet;
     }
+
+    private static void floodFill(char[][] board, int floodRow, int floodCol, Int numInFill){
+
+        if(board[floodRow][floodCol]==TILE_FOG){
+            numInFill.wrapperInt++;
+            board[floodRow][floodCol]=TILE_HIT;
+        }
+        if(numInFill.wrapperInt >= TETROID_SIZE){
+            return;
+        }
+        if((floodRow+1) < BOARD_SIZE){
+            floodFill(board, floodRow+1, floodCol, numInFill);
+        }
+        if((floodRow-1) > 0){
+            floodFill(board, floodRow-1, floodCol, numInFill);
+        }
+        if((floodCol+1) < BOARD_SIZE){
+            floodFill(board, floodRow, floodCol+1, numInFill);
+        }
+        if((floodCol-1) > 0){
+            floodFill(board, floodRow, floodCol-1, numInFill);
+        }
+    }
+
+    private static boolean floodFillCheck(char[][] board, int floodRow, int floodCol){
+        char[][] thisBoard = new char[BOARD_SIZE][BOARD_SIZE];
+        for(int row = 0; row < BOARD_SIZE; row ++){
+            for(int column = 0; column < BOARD_SIZE; column ++){
+                thisBoard[row][column] = board[row][column];
+            }
+        }
+        Int sizeOfEmptySpace = new Int();
+        floodFill(thisBoard, floodRow, floodCol, sizeOfEmptySpace);
+        return sizeOfEmptySpace.wrapperInt >= TETROID_SIZE;
+    }
+}
+
+class Int {
+    public int wrapperInt = 0;
 }
