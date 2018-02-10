@@ -31,7 +31,7 @@ public class Board {
         }
         return toRet;
     }
-    public static Board makeSecretBoard(int numTanks){
+    public static Board makeSecretBoard(int numTanks) throws Exception {
         Board toRet= new Board();
         // initialize to blank
         for(int row = 0; row < BOARD_SIZE; row ++){
@@ -40,7 +40,7 @@ public class Board {
             }
         }
         if(numTanks > UPPER_TANK_THRESHOLD){
-            numTanks = UPPER_TANK_THRESHOLD;
+            throw new IllegalArgumentException("Too many Tanks");
         }
         // make tanks drive onto field
         List<Tank> mytanks = new ArrayList<>();// needs something extra
