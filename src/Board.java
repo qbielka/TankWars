@@ -21,7 +21,7 @@ public class Board {
     private char[][] board = new char[BOARD_SIZE][BOARD_SIZE];
 
 
-    // sets all tiles to unknown
+    private Board(){}
     public static Board makeDisplayBoard(){
         Board toRet= new Board();
         for(int row = 0; row < BOARD_SIZE; row ++){
@@ -54,11 +54,12 @@ public class Board {
                 pStartRow = (int) (Math.random() * 10);
             }
             Tank toAdd = new Tank(aTank);
-            toRet.board[pStartRow][pStartCol] = (char) (TILE_TANK + tankNumber);
-            aTank.add(new coordinate(pStartRow,pStartCol));
+            int tetroidSize=0;
             int currRow = pStartRow;
             int currCol = pStartCol;
-            int tetroidSize=0;
+
+            makePointTank(toRet, tankNumber, aTank, pStartCol, pStartRow);
+            tetroidSize++;
             while (tetroidSize < TETROID_SIZE) {
                 int randomDirection = (int) (Math.random() * 4);
                 int randomPiece = (int) (Math.random() * aTank.size());
@@ -68,34 +69,44 @@ public class Board {
                 if (randomDirection == UP &&
                         ((currCol+1) < BOARD_SIZE && toRet.board[currRow][currCol+1] == TILE_BLANK)) {
                     currCol++;
-                    aTank.add(new coordinate(currRow,currCol));
+                    makePointTank(toRet, tankNumber, aTank, currCol, currRow);
+
                     tetroidSize++;
 
                 }
                 else if (randomDirection == RIGHT &&
                         ((currRow+1) < BOARD_SIZE && toRet.board[currRow+1][currCol] == TILE_BLANK)) {
                     currRow++;
-                    aTank.add(new coordinate(currRow, currCol));
+                    makePointTank(toRet, tankNumber, aTank, currCol, currRow);
                     tetroidSize++;
 
                 }
                 else if (randomDirection == DOWN &&
                         ((currCol-1) > 0 && toRet.board[currRow][currCol-1] == TILE_BLANK)) {
                     currCol--;
-                    aTank.add(new coordinate(currRow,currCol));
+                    makePointTank(toRet, tankNumber, aTank, currCol, currRow);
                     tetroidSize++;
 
                 }
                 else if (randomDirection == LEFT &&
                         ((currRow-1) > 0 && toRet.board[currRow-1][currCol] == TILE_BLANK)) {
                     currRow--;
-                    aTank.add(new coordinate(currRow, currCol));
+                    makePointTank(toRet, tankNumber, aTank, currCol, currRow);
                     tetroidSize++;
                 }
             }
             mytanks.add(toAdd);
         }
         return toRet;
+    }
+
+    private static void makePointTank(Board toRet, final int tankNumber, List<coordinate> aTank, final int col, final int row) {
+        toRet.board[row][col] = (char) (TILE_TANK + tankNumber);
+        aTank.add(new coordinate(row, col));
+    }
+
+    public char getTile(coordinate point){
+        return board[point.getRowIndex()][point.getColIndex()];
     }
 
     private static void floodFill(char[][] board, int floodRow, int floodCol, Int numInFill){
