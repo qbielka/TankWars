@@ -10,6 +10,9 @@ public class Tank {
     }
 
     public int getDamage(){
+        if(health==0){
+
+        }
         // if statements for each health level
         return 0;
     }

@@ -6,6 +6,7 @@ public class BoardDisplay {
     private static final char COLLUMN_TAG = 'a';
     private static final int BOARD_SIZE = 10;
 
+
     public static void displayBoard(BoardLinker boards){
         coordinate printPoint = new coordinate(0,0);
         printBoardHeader();

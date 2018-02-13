@@ -7,36 +7,35 @@ import java.util.List;
 public class Board {
     private static final short BOARD_SIZE=10;
     private static final int UPPER_TANK_THRESHOLD = 25;
-    private static final int LOWER_TNK_THRESHOLD = 15;
     private static final int MIDDLE_TANK_THRESHOLD = 20;
-    private static final char TILE_BLANK = ' ';
-    private static final char TILE_FOG = '~';
-    private static final char TILE_HIT = 'X';
-    private static final char TILE_TANK = 'A';
     private static final int TETROID_SIZE = 4;
     private static final int UP = 0;
     private static final int RIGHT = 1;
     private static final int DOWN = 2;
     private static final int LEFT = 3;
+
     private char[][] board = new char[BOARD_SIZE][BOARD_SIZE];
+    private List<Tank> tanks;
 
 
+    // constuctors and factory
     private Board(){}
     public static Board makeDisplayBoard(){
         Board toRet= new Board();
         for(int row = 0; row < BOARD_SIZE; row ++){
             for(int column = 0; column < BOARD_SIZE; column ++){
-                toRet.board[row][column] = TILE_FOG;
+                toRet.board[row][column] = Tile.getTileFog();
             }
         }
         return toRet;
     }
+
     public static Board makeSecretBoard(int numTanks) throws Exception {
         Board toRet= new Board();
         // initialize to blank
         for(int row = 0; row < BOARD_SIZE; row ++){
             for(int column = 0; column < BOARD_SIZE; column ++){
-                toRet.board[row][column] = TILE_BLANK;
+                toRet.board[row][column] = Tile.getTileBlank();
             }
         }
         if(numTanks > UPPER_TANK_THRESHOLD){
@@ -49,7 +48,7 @@ public class Board {
             int pStartCol = (int) (Math.random() * 10);
             int pStartRow = (int) (Math.random() * 10);
             // yes this while loop may be infinite with >15 tanks
-            while (toRet.board[pStartRow][pStartCol] == TILE_TANK || !floodFillCheck(toRet.board, pStartRow, pStartCol)) {
+            while (toRet.board[pStartRow][pStartCol] == Tile.getTileTank() || !floodFillCheck(toRet.board, pStartRow, pStartCol)) {
                 pStartCol = (int) (Math.random() * 10);
                 pStartRow = (int) (Math.random() * 10);
             }
@@ -67,7 +66,7 @@ public class Board {
                 currRow = aTank.get(randomPiece).getRowIndex();
 
                 if (randomDirection == UP &&
-                        ((currCol+1) < BOARD_SIZE && toRet.board[currRow][currCol+1] == TILE_BLANK)) {
+                        ((currCol+1) < BOARD_SIZE && toRet.board[currRow][currCol+1] == Tile.getTileBlank())) {
                     currCol++;
                     makePointTank(toRet, tankNumber, aTank, currCol, currRow);
 
@@ -75,21 +74,21 @@ public class Board {
 
                 }
                 else if (randomDirection == RIGHT &&
-                        ((currRow+1) < BOARD_SIZE && toRet.board[currRow+1][currCol] == TILE_BLANK)) {
+                        ((currRow+1) < BOARD_SIZE && toRet.board[currRow+1][currCol] == Tile.getTileBlank())) {
                     currRow++;
                     makePointTank(toRet, tankNumber, aTank, currCol, currRow);
                     tetroidSize++;
 
                 }
                 else if (randomDirection == DOWN &&
-                        ((currCol-1) > 0 && toRet.board[currRow][currCol-1] == TILE_BLANK)) {
+                        ((currCol-1) > 0 && toRet.board[currRow][currCol-1] == Tile.getTileBlank())) {
                     currCol--;
                     makePointTank(toRet, tankNumber, aTank, currCol, currRow);
                     tetroidSize++;
 
                 }
                 else if (randomDirection == LEFT &&
-                        ((currRow-1) > 0 && toRet.board[currRow-1][currCol] == TILE_BLANK)) {
+                        ((currRow-1) > 0 && toRet.board[currRow-1][currCol] == Tile.getTileBlank())) {
                     currRow--;
                     makePointTank(toRet, tankNumber, aTank, currCol, currRow);
                     tetroidSize++;
@@ -97,23 +96,35 @@ public class Board {
             }
             mytanks.add(toAdd);
         }
+        toRet.tanks =mytanks;
         return toRet;
     }
 
     private static void makePointTank(Board toRet, final int tankNumber, List<coordinate> aTank, final int col, final int row) {
-        toRet.board[row][col] = (char) (TILE_TANK + tankNumber);
+        toRet.board[row][col] = (char) (Tile.getTileTank() + tankNumber);
         aTank.add(new coordinate(row, col));
     }
 
+    //helper for BoardLinker
     public char getTile(coordinate point){
         return board[point.getRowIndex()][point.getColIndex()];
     }
 
+    public void makeTileHit(coordinate point) {
+        if (board[point.getRowIndex()][point.getColIndex()] == Tile.getTileFog()){
+            board[point.getRowIndex()][point.getColIndex()] = Tile.getTileHit();
+        }
+    }
+
+    public List<Tank> getTanks(){
+        return tanks;
+    }
+    // checks for factory methods
     private static void floodFill(char[][] board, int floodRow, int floodCol, Int numInFill){
 
-        if(board[floodRow][floodCol]==TILE_BLANK){
+        if(board[floodRow][floodCol]==Tile.getTileBlank()){
             numInFill.wrapperInt++;
-            board[floodRow][floodCol]=TILE_HIT;
+            board[floodRow][floodCol]=Tile.getTileHit();
         }
         else {
             return;
@@ -146,6 +157,7 @@ public class Board {
         floodFill(thisBoard, floodRow, floodCol, sizeOfEmptySpace);
         return sizeOfEmptySpace.wrapperInt >= TETROID_SIZE;
     }
+
 }
 
 class Int {
