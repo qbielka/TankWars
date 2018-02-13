@@ -10,6 +10,10 @@ public class BoardLinker {
         displayBoard=Board.makeDisplayBoard();
     }
 
+    public void playerGuess(coordinate guess){
+
+    }
+
     public char getDisplayBoardTile(coordinate point){
         return displayBoard.getTile(point);
     }
