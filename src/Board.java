@@ -40,6 +40,8 @@ public class Board {
         }
         if(numTanks > UPPER_TANK_THRESHOLD){
             throw new IllegalArgumentException("Too many Tanks");
+        }else if(numTanks <= 0){
+            throw new IllegalArgumentException("Too few Tanks");
         }
         // make tanks drive onto field
         List<Tank> mytanks = new ArrayList<>();// needs something extra
