@@ -6,7 +6,7 @@ public class Game {
     public static void main(String [] args)
     {
         try {
-            BoardLinker linked = new BoardLinker(1);
+            BoardLinker linked = new BoardLinker(2);
             BoardDisplay.displaySecretBoard(linked);
             TankList tanks = new TankList(linked.getTankList());
 
