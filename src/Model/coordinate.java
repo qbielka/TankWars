@@ -1,3 +1,5 @@
+package Model;
+
 public class coordinate {
     public static final int MAX_COORDINATE = 9;
     private int rowIndex;

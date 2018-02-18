@@ -1,3 +1,9 @@
+package Model;
+
+import Model.Tank;
+import Model.Tile;
+import Model.coordinate;
+
 import java.util.ArrayList;
 import java.util.List;
 

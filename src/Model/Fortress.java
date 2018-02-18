@@ -1,12 +1,22 @@
+package Model;
+
 /**
  * maintains a fortress hp
  */
 public class Fortress {
+    private static Fortress thisFortress;
     private static final int MAX_FORTRESS_HP = 1500;
     private int fortressHP;
 
-    public Fortress(){
+    private Fortress(){
         fortressHP = MAX_FORTRESS_HP;
+    }
+
+    public static Fortress getInstance(){
+        if(thisFortress == null){
+            thisFortress = new Fortress();
+        }
+        return thisFortress;
     }
 
     public void damageFortress(int damage){

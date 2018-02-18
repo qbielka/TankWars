@@ -1,3 +1,5 @@
+package Model;
+
 /**
  * For Unification of Tiles over multiple classes
  */

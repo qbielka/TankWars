@@ -1,3 +1,7 @@
+package Model;
+
+import Model.coordinate;
+
 import java.util.List;
 
 public class Tank {

@@ -1,3 +1,6 @@
+package Model;
+
+
 import java.util.List;
 
 /**
@@ -19,13 +22,13 @@ public class BoardLinker {
     }
     // violates Command Query Separation
     public boolean isPlayerGuessHit(coordinate guess){
-       if ( getCheatTile(guess)!= Tile.getTileBlank()){
-           if(getDisplayBoardTile(guess)==Tile.getTileFog()) {
-               displayBoard.makeTileHit(guess);
-               return true;
-           }
-       }
-       return false;
+        if ( getCheatTile(guess)!= Tile.getTileBlank()){
+            if(getDisplayBoardTile(guess)==Tile.getTileFog()) {
+                displayBoard.makeTileHit(guess);
+                return true;
+            }
+        }
+        return false;
     }
 
     public char getDisplayBoardTile(coordinate point){

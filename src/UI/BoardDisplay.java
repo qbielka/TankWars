@@ -1,3 +1,8 @@
+package UI;
+
+import Model.BoardLinker;
+import Model.coordinate;
+
 /**
  * will display a given board to the UI
  */
