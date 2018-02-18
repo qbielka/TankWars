@@ -11,7 +11,7 @@ public class BoardLinker {
     private Board displayBoard;
     private List<Tank> tankList;
 
-    BoardLinker(int numTanks) throws Exception{
+    public BoardLinker(int numTanks) throws Exception{
         secretBoard=Board.makeSecretBoard(numTanks);
         displayBoard=Board.makeDisplayBoard();
         tankList=secretBoard.getTanks();

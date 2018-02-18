@@ -11,7 +11,7 @@ import java.util.List;
  */
 public class TankList {
     private List <Tank> tankList;
-    TankList(List<Tank> tankList){
+    public TankList(List<Tank> tankList){
         this.tankList=tankList;
     }
 
