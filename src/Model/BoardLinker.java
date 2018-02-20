@@ -1,3 +1,6 @@
+package Model;
+
+
 import java.util.List;
 
 /**
@@ -8,7 +11,7 @@ public class BoardLinker {
     private Board displayBoard;
     private List<Tank> tankList;
 
-    BoardLinker(int numTanks) throws Exception{
+    public BoardLinker(int numTanks) throws Exception{
         secretBoard=Board.makeSecretBoard(numTanks);
         displayBoard=Board.makeDisplayBoard();
         tankList=secretBoard.getTanks();
@@ -18,21 +21,21 @@ public class BoardLinker {
         return tankList;
     }
     // violates Command Query Separation
-    public boolean isPlayerGuessHit(coordinate guess){
-       if ( getCheatTile(guess)!= Tile.getTileBlank()){
-           if(getDisplayBoardTile(guess)==Tile.getTileFog()) {
-               displayBoard.makeTileHit(guess);
-               return true;
-           }
-       }
-       return false;
+    public boolean isPlayerGuessHit(Coordinate guess){
+        if ( getCheatTile(guess)!= Tile.getTileBlank()){
+            if(getDisplayBoardTile(guess)==Tile.getTileFog()) {
+                displayBoard.makeTileHit(guess);
+                return true;
+            }
+        }
+        return false;
     }
 
-    public char getDisplayBoardTile(coordinate point){
+    public char getDisplayBoardTile(Coordinate point){
         return displayBoard.getTile(point);
     }
 
-    public char getCheatTile(coordinate point){
+    public char getCheatTile(Coordinate point){
         return secretBoard.getTile(point);
     }
 }

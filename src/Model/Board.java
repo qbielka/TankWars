@@ -1,3 +1,5 @@
+package Model;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,12 +15,13 @@ public class Board {
     private static final int RIGHT = 1;
     private static final int DOWN = 2;
     private static final int LEFT = 3;
+    private static final int MAX_TRIES_BEFORE_GIVE_UP = 20000;
 
     private char[][] board = new char[BOARD_SIZE][BOARD_SIZE];
     private List<Tank> tanks;
 
 
-    // constuctors and factory
+    // constructors and factory
     private Board(){}
     public static Board makeDisplayBoard(){
         Board toRet= new Board();
@@ -40,14 +43,16 @@ public class Board {
         }
         if(numTanks > UPPER_TANK_THRESHOLD){
             throw new IllegalArgumentException("Too many Tanks");
+        }else if(numTanks <= 0){
+            throw new IllegalArgumentException("Too few Tanks");
         }
 
         // make tanks drive onto field
-        List<Tank> mytanks = new ArrayList<>();// needs something extra
+        List<Tank> myTanks = new ArrayList<>();// needs something extra
 
 
         for(int tankNumber = 0; tankNumber < numTanks; tankNumber++) {
-            List<coordinate> aTank = new ArrayList<>();
+            List<Coordinate> aTank = new ArrayList<>();
             int pStartCol = (int) (Math.random() * 10);
             int pStartRow = (int) (Math.random() * 10);
 
@@ -60,29 +65,17 @@ public class Board {
                 numOfTries++;
 
                 // If random check doesn't find empty spot, look through all spots
-                if( numOfTries == 20 ){
-                    boolean spaceAvailable = false;
-                    
-                    for( int row = 0; row < BOARD_SIZE; row++ ){
-                        for( int column = 0; column < BOARD_SIZE; column++ ){
-                            // If space available, set flag to true
-                            if( floodFillCheck(toRet.board, row, column) ) {
-                                spaceAvailable = true;
-                            }
-                        }
-                    }
-
-                    // No spaces available for tank
-                    if( !spaceAvailable ){
-                        throw new IllegalArgumentException( "Cannot place all tanks" );
+                if( numOfTries == MAX_TRIES_BEFORE_GIVE_UP) {
+                    if (isNoPositions(toRet)) {
+                        throw new IllegalArgumentException("Cannot place all tanks");
                     }
                 }
             }
 
             Tank toAdd = new Tank(aTank);
             int tetroidSize = 0;
-            int currRow = pStartRow;
-            int currCol = pStartCol;
+            int currRow;
+            int currCol;
 
             makePointTank(toRet, tankNumber, aTank, pStartCol, pStartRow);
             tetroidSize++;
@@ -121,23 +114,39 @@ public class Board {
                     tetroidSize++;
                 }
             }
-            mytanks.add(toAdd);
+            myTanks.add(toAdd);
         }
-        toRet.tanks =mytanks;
+        toRet.tanks =myTanks;
         return toRet;
     }
 
-    private static void makePointTank(Board toRet, final int tankNumber, List<coordinate> aTank, final int col, final int row) {
+    private static boolean isNoPositions(Board toRet) {
+        boolean spaceAvailable = false;
+
+        for( int row = 0; row < BOARD_SIZE; row++ ){
+            for( int column = 0; column < BOARD_SIZE; column++ ){
+                // If space available, set flag to true
+                if( floodFillCheck(toRet.board, row, column) ) {
+                    spaceAvailable = true;
+                }
+            }
+        }
+
+
+        return !spaceAvailable;
+    }
+
+    private static void makePointTank(Board toRet, final int tankNumber, List<Coordinate> aTank, final int col, final int row) {
         toRet.board[row][col] = (char) (Tile.getTileTank() + tankNumber);
-        aTank.add(new coordinate(row, col));
+        aTank.add(new Coordinate(row, col));
     }
 
     //helper for BoardLinker
-    public char getTile(coordinate point){
+    public char getTile(Coordinate point){
         return board[point.getRowIndex()][point.getColIndex()];
     }
 
-    public void makeTileHit(coordinate point) {
+    public void makeTileHit(Coordinate point) {
         if (board[point.getRowIndex()][point.getColIndex()] == Tile.getTileFog()){
             board[point.getRowIndex()][point.getColIndex()] = Tile.getTileHit();
         }
@@ -146,6 +155,7 @@ public class Board {
     public List<Tank> getTanks(){
         return tanks;
     }
+
     // checks for factory methods
     private static void floodFill(char[][] board, int floodRow, int floodCol, Int numInFill){
 

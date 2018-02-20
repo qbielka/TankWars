@@ -5,13 +5,6 @@ public class Game {
 
     public static void main(String [] args)
     {
-        try {
-            BoardLinker linked = new BoardLinker(22);
-            BoardDisplay.displaySecretBoard(linked);
-            TankList tanks = new TankList(linked.getTankList());
 
-        }catch (Exception e){
-            System.out.println(e.getMessage());
-        }
     }
 }
