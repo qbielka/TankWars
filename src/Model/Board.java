@@ -89,7 +89,6 @@ public class Board {
                         ((currCol+1) < BOARD_SIZE && toRet.board[currRow][currCol+1] == Tile.getTileBlank())) {
                     currCol++;
                     makePointTank(toRet, tankNumber, aTank, currCol, currRow);
-
                     tetroidSize++;
 
                 }
@@ -185,6 +184,9 @@ public class Board {
 
     private static boolean floodFillCheck(char[][] board, int floodRow, int floodCol){
         char[][] thisBoard = new char[BOARD_SIZE][BOARD_SIZE];
+        if(board[floodRow][floodCol] != Tile.getTileBlank()){
+            return false;
+        }
         for(int row = 0; row < BOARD_SIZE; row ++){
             for(int column = 0; column < BOARD_SIZE; column ++){
                 thisBoard[row][column] = board[row][column];
