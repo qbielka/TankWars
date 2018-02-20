@@ -4,7 +4,7 @@ package Model;
 import java.util.List;
 
 /**
- * will link a secret board and a displayable board together for game logic
+ * links a secret board and a displayable board together for game logic
  */
 public class BoardLinker {
     private Board secretBoard;

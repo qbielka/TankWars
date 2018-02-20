@@ -4,6 +4,9 @@ import Model.Coordinate;
 
 import java.util.Scanner;
 
+/**
+ * accepts player input and translates it to a coordinate for the Model Classes to use
+ */
 public class PlayerInput {
 
 

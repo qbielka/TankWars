@@ -1,5 +1,8 @@
 package Model;
 
+/**
+ * maintains a location on a grid to be used by other classes
+ */
 public class Coordinate {
     private static final int MAX_COORDINATE = 9;
     private int rowIndex;

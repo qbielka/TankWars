@@ -2,6 +2,9 @@ package Model;
 
 import java.util.List;
 
+/**
+ * maintains a single Tank including it hitpoints and damage
+ */
 public class Tank {
     public static final int MAX_TANK_SIZE = 4;
     private static final int MAX_DMG = 20;

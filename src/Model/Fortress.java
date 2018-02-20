@@ -1,7 +1,7 @@
 package Model;
 
 /**
- * maintains a fortress hp
+ * maintains a fortress hp holding a single instance
  */
 public class Fortress {
     private static Fortress thisFortress;
