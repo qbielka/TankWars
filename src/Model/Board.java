@@ -45,19 +45,46 @@ public class Board {
         }else if(numTanks <= 0){
             throw new IllegalArgumentException("Too few Tanks");
         }
+
         // make tanks drive onto field
         List<Tank> mytanks = new ArrayList<>();// needs something extra
+
+
         for(int tankNumber = 0; tankNumber < numTanks; tankNumber++) {
             List<Coordinate> aTank = new ArrayList<>();
             int pStartCol = (int) (Math.random() * 10);
             int pStartRow = (int) (Math.random() * 10);
-            // yes this while loop may be infinite with >15 tanks
-            while (toRet.board[pStartRow][pStartCol] == Tile.getTileTank() || !floodFillCheck(toRet.board, pStartRow, pStartCol)) {
+
+            int numOfTries = 0;
+
+            // while board position is a tank tile or if there's not enough space for a tank, then retry
+            while (toRet.board[pStartRow][pStartCol] == Tile.getTileTank() || !floodFillCheck(toRet.board, pStartRow, pStartCol) ) {
                 pStartCol = (int) (Math.random() * 10);
                 pStartRow = (int) (Math.random() * 10);
+                numOfTries++;
+
+                // If random check doesn't find empty spot, look through all spots
+                if( numOfTries == 20 ){
+                    boolean spaceAvailable = false;
+
+                    for( int row = 0; row < BOARD_SIZE; row++ ){
+                        for( int column = 0; column < BOARD_SIZE; column++ ){
+                            // If space available, set flag to true
+                            if( floodFillCheck(toRet.board, row, column) ) {
+                                spaceAvailable = true;
+                            }
+                        }
+                    }
+
+                    // No spaces available for tank
+                    if( !spaceAvailable ){
+                        throw new IllegalArgumentException( "Cannot place all tanks" );
+                    }
+                }
             }
+
             Tank toAdd = new Tank(aTank);
-            int tetroidSize=0;
+            int tetroidSize = 0;
             int currRow;
             int currCol;
 
