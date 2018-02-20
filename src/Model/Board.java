@@ -15,12 +15,13 @@ public class Board {
     private static final int RIGHT = 1;
     private static final int DOWN = 2;
     private static final int LEFT = 3;
+    public static final int MAX_TRIES_BEFORE_GIVE_UP = 20000;
 
     private char[][] board = new char[BOARD_SIZE][BOARD_SIZE];
     private List<Tank> tanks;
 
 
-    // constuctors and factory
+    // constructors and factory
     private Board(){}
     public static Board makeDisplayBoard(){
         Board toRet= new Board();
@@ -64,21 +65,9 @@ public class Board {
                 numOfTries++;
 
                 // If random check doesn't find empty spot, look through all spots
-                if( numOfTries == 20 ){
-                    boolean spaceAvailable = false;
-
-                    for( int row = 0; row < BOARD_SIZE; row++ ){
-                        for( int column = 0; column < BOARD_SIZE; column++ ){
-                            // If space available, set flag to true
-                            if( floodFillCheck(toRet.board, row, column) ) {
-                                spaceAvailable = true;
-                            }
-                        }
-                    }
-
-                    // No spaces available for tank
-                    if( !spaceAvailable ){
-                        throw new IllegalArgumentException( "Cannot place all tanks" );
+                if( numOfTries == MAX_TRIES_BEFORE_GIVE_UP) {
+                    if (isNoPositions(toRet)) {
+                        throw new IllegalArgumentException("Cannot place all tanks");
                     }
                 }
             }
@@ -131,6 +120,22 @@ public class Board {
         return toRet;
     }
 
+    private static boolean isNoPositions(Board toRet) {
+        boolean spaceAvailable = false;
+
+        for( int row = 0; row < BOARD_SIZE; row++ ){
+            for( int column = 0; column < BOARD_SIZE; column++ ){
+                // If space available, set flag to true
+                if( floodFillCheck(toRet.board, row, column) ) {
+                    spaceAvailable = true;
+                }
+            }
+        }
+
+
+        return !spaceAvailable;
+    }
+
     private static void makePointTank(Board toRet, final int tankNumber, List<Coordinate> aTank, final int col, final int row) {
         toRet.board[row][col] = (char) (Tile.getTileTank() + tankNumber);
         aTank.add(new Coordinate(row, col));
@@ -150,6 +155,7 @@ public class Board {
     public List<Tank> getTanks(){
         return tanks;
     }
+
     // checks for factory methods
     private static void floodFill(char[][] board, int floodRow, int floodCol, Int numInFill){
 
