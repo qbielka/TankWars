@@ -34,88 +34,113 @@ public class Board {
     }
 
     public static Board makeSecretBoard(int numTanks) throws Exception {
-        Board toRet= new Board();
-        // initialize to blank
-        for(int row = 0; row < BOARD_SIZE; row ++){
-            for(int column = 0; column < BOARD_SIZE; column ++){
-                toRet.board[row][column] = Tile.getTileBlank();
+        Board toRet = makeBlankBoard(Tile.getTileBlank());
+        boundsCheck(numTanks);
+
+        List<Tank> myTanks = new ArrayList<>();// needs something extra
+
+        for(int tankNumber = 0; tankNumber < numTanks; tankNumber++) {
+            List<Coordinate> aTank = new ArrayList<>();
+            Int pStartCol = new Int(randomCoordinate());
+            Int pStartRow = new Int(randomCoordinate());
+
+            findGoodSpot(toRet, pStartCol, pStartRow);
+
+            Tank tankToAdd = new Tank(aTank);
+            Int tetroidSize = new Int(0);
+            Int currRow;
+            Int currCol;
+
+            makePointTank(toRet, tankNumber, aTank, pStartCol.wrapperInt, pStartRow.wrapperInt);
+            tetroidSize.wrapperInt++;
+            makeTankFromSeed(toRet, tankNumber, aTank, tetroidSize);
+            myTanks.add(tankToAdd);
+        }
+        toRet.tanks = myTanks;
+        return toRet;
+    }
+
+    private static void findGoodSpot(Board toRet, Int pStartCol, Int pStartRow) {
+        int numberOfTrys = 0;
+
+        // while board position is a tank tile or if there's not enough space for a tank, then retry
+        while (isGoodLocation(toRet, pStartCol.wrapperInt, pStartRow.wrapperInt)) {
+            pStartCol.wrapperInt = randomCoordinate();
+            pStartRow.wrapperInt = randomCoordinate();
+            numberOfTrys++;
+
+            // If random check doesn't find empty spot, look through all spots
+            if( numberOfTrys >= MAX_TRIES_BEFORE_GIVE_UP) {
+                if (isNoPositions(toRet)) {
+                    throw new IllegalArgumentException("Cannot place all tanks");
+                }
             }
         }
+    }
+
+    private static void makeTankFromSeed(Board toRet, int tankNumber, List<Coordinate> aTank, Int tetroidSize) {
+        Int currCol;
+        Int currRow;
+        while (tetroidSize.wrapperInt < TETROID_SIZE) {
+            Int randomDirection = new Int((int) (Math.random() * 4));
+            Int randomPiece = new Int((int) (Math.random() * aTank.size()));
+            currCol = new Int ( aTank.get(randomPiece.wrapperInt).getColIndex());
+            currRow = new Int (aTank.get(randomPiece.wrapperInt).getRowIndex());
+
+            if (randomDirection.wrapperInt == UP &&
+                    ((currCol.wrapperInt+1) < BOARD_SIZE && toRet.board[currRow.wrapperInt][currCol.wrapperInt+1] == Tile.getTileBlank())) {
+                currCol.wrapperInt++;
+                makePointTank(toRet, tankNumber, aTank, currCol.wrapperInt, currRow.wrapperInt);
+                tetroidSize.wrapperInt++;
+
+            }
+            else if (randomDirection.wrapperInt == RIGHT &&
+                    ((currRow.wrapperInt+1) < BOARD_SIZE && toRet.board[currRow.wrapperInt+1][currCol.wrapperInt] == Tile.getTileBlank())) {
+                currRow.wrapperInt++;
+                makePointTank(toRet, tankNumber, aTank, currCol.wrapperInt, currRow.wrapperInt);
+                tetroidSize.wrapperInt++;
+
+            }
+            else if (randomDirection.wrapperInt == DOWN &&
+                    ((currCol.wrapperInt-1) > 0 && toRet.board[currRow.wrapperInt][currCol.wrapperInt-1] == Tile.getTileBlank())) {
+                currCol.wrapperInt--;
+                makePointTank(toRet, tankNumber, aTank, currCol.wrapperInt, currRow.wrapperInt);
+                tetroidSize.wrapperInt++;
+
+            }
+            else if (randomDirection.wrapperInt == LEFT &&
+                    ((currRow.wrapperInt-1) > 0 && toRet.board[currRow.wrapperInt-1][currCol.wrapperInt] == Tile.getTileBlank())) {
+                currRow.wrapperInt--;
+                makePointTank(toRet, tankNumber, aTank, currCol.wrapperInt, currRow.wrapperInt);
+                tetroidSize.wrapperInt++;
+            }
+        }
+    }
+
+    private static boolean isGoodLocation(Board toRet, int pStartCol, int pStartRow) {
+        return toRet.board[pStartRow][pStartCol] == Tile.getTileTank() || !floodFillCheck(toRet.board, pStartRow, pStartCol);
+    }
+
+    private static int randomCoordinate() {
+        return (int) (Math.random() * 10);
+    }
+
+    private static void boundsCheck(int numTanks) {
         if(numTanks > UPPER_TANK_THRESHOLD){
             throw new IllegalArgumentException("Too many Tanks");
         }else if(numTanks <= 0){
             throw new IllegalArgumentException("Too few Tanks");
         }
+    }
 
-        // make tanks drive onto field
-        List<Tank> myTanks = new ArrayList<>();// needs something extra
-
-
-        for(int tankNumber = 0; tankNumber < numTanks; tankNumber++) {
-            List<Coordinate> aTank = new ArrayList<>();
-            int pStartCol = (int) (Math.random() * 10);
-            int pStartRow = (int) (Math.random() * 10);
-
-            int numOfTries = 0;
-
-            // while board position is a tank tile or if there's not enough space for a tank, then retry
-            while (toRet.board[pStartRow][pStartCol] == Tile.getTileTank() || !floodFillCheck(toRet.board, pStartRow, pStartCol) ) {
-                pStartCol = (int) (Math.random() * 10);
-                pStartRow = (int) (Math.random() * 10);
-                numOfTries++;
-
-                // If random check doesn't find empty spot, look through all spots
-                if( numOfTries == MAX_TRIES_BEFORE_GIVE_UP) {
-                    if (isNoPositions(toRet)) {
-                        throw new IllegalArgumentException("Cannot place all tanks");
-                    }
-                }
+    private static Board makeBlankBoard(char tileBlank) {
+        Board toRet = new Board();
+        // initialize to blank
+        for (int row = 0; row < BOARD_SIZE; row++) {
+            for (int column = 0; column < BOARD_SIZE; column++) {
+                toRet.board[row][column] = tileBlank;
             }
-
-            Tank toAdd = new Tank(aTank);
-            int tetroidSize = 0;
-            int currRow;
-            int currCol;
-
-            makePointTank(toRet, tankNumber, aTank, pStartCol, pStartRow);
-            tetroidSize++;
-            while (tetroidSize < TETROID_SIZE) {
-                int randomDirection = (int) (Math.random() * 4);
-                int randomPiece = (int) (Math.random() * aTank.size());
-                currCol = aTank.get(randomPiece).getColIndex();
-                currRow = aTank.get(randomPiece).getRowIndex();
-
-                if (randomDirection == UP &&
-                        ((currCol+1) < BOARD_SIZE && toRet.board[currRow][currCol+1] == Tile.getTileBlank())) {
-                    currCol++;
-                    makePointTank(toRet, tankNumber, aTank, currCol, currRow);
-                    tetroidSize++;
-
-                }
-                else if (randomDirection == RIGHT &&
-                        ((currRow+1) < BOARD_SIZE && toRet.board[currRow+1][currCol] == Tile.getTileBlank())) {
-                    currRow++;
-                    makePointTank(toRet, tankNumber, aTank, currCol, currRow);
-                    tetroidSize++;
-
-                }
-                else if (randomDirection == DOWN &&
-                        ((currCol-1) > 0 && toRet.board[currRow][currCol-1] == Tile.getTileBlank())) {
-                    currCol--;
-                    makePointTank(toRet, tankNumber, aTank, currCol, currRow);
-                    tetroidSize++;
-
-                }
-                else if (randomDirection == LEFT &&
-                        ((currRow-1) > 0 && toRet.board[currRow-1][currCol] == Tile.getTileBlank())) {
-                    currRow--;
-                    makePointTank(toRet, tankNumber, aTank, currCol, currRow);
-                    tetroidSize++;
-                }
-            }
-            myTanks.add(toAdd);
         }
-        toRet.tanks =myTanks;
         return toRet;
     }
 
@@ -192,7 +217,7 @@ public class Board {
                 thisBoard[row][column] = board[row][column];
             }
         }
-        Int sizeOfEmptySpace = new Int();
+        Int sizeOfEmptySpace = new Int(0);
         floodFill(thisBoard, floodRow, floodCol, sizeOfEmptySpace);
         return sizeOfEmptySpace.wrapperInt >= TETROID_SIZE;
     }
@@ -201,4 +226,8 @@ public class Board {
 
 class Int {
     public int wrapperInt = 0;
+
+    Int(int item){
+        wrapperInt = item;
+    }
 }

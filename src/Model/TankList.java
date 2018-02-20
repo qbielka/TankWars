@@ -15,7 +15,7 @@ public class TankList {
         this.tankList=tankList;
     }
 
-    List<Integer> dealDamage(){
+    public List<Integer> dealDamage(){
         Fortress fortress = Fortress.getInstance();
         List<Integer> listOfDamageByTank = new ArrayList<>();
         for (Tank aTank : tankList) {
@@ -24,5 +24,9 @@ public class TankList {
             listOfDamageByTank.add(damage);
         }
         return listOfDamageByTank;
+    }
+
+    public int getSize(){
+        return tankList.size();
     }
 }
