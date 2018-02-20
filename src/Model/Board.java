@@ -1,9 +1,5 @@
 package Model;
 
-import Model.Tank;
-import Model.Tile;
-import Model.coordinate;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,7 +48,7 @@ public class Board {
         // make tanks drive onto field
         List<Tank> mytanks = new ArrayList<>();// needs something extra
         for(int tankNumber = 0; tankNumber < numTanks; tankNumber++) {
-            List<coordinate> aTank = new ArrayList<>();
+            List<Coordinate> aTank = new ArrayList<>();
             int pStartCol = (int) (Math.random() * 10);
             int pStartRow = (int) (Math.random() * 10);
             // yes this while loop may be infinite with >15 tanks
@@ -62,8 +58,8 @@ public class Board {
             }
             Tank toAdd = new Tank(aTank);
             int tetroidSize=0;
-            int currRow = pStartRow;
-            int currCol = pStartCol;
+            int currRow;
+            int currCol;
 
             makePointTank(toRet, tankNumber, aTank, pStartCol, pStartRow);
             tetroidSize++;
@@ -108,17 +104,17 @@ public class Board {
         return toRet;
     }
 
-    private static void makePointTank(Board toRet, final int tankNumber, List<coordinate> aTank, final int col, final int row) {
+    private static void makePointTank(Board toRet, final int tankNumber, List<Coordinate> aTank, final int col, final int row) {
         toRet.board[row][col] = (char) (Tile.getTileTank() + tankNumber);
-        aTank.add(new coordinate(row, col));
+        aTank.add(new Coordinate(row, col));
     }
 
     //helper for BoardLinker
-    public char getTile(coordinate point){
+    public char getTile(Coordinate point){
         return board[point.getRowIndex()][point.getColIndex()];
     }
 
-    public void makeTileHit(coordinate point) {
+    public void makeTileHit(Coordinate point) {
         if (board[point.getRowIndex()][point.getColIndex()] == Tile.getTileFog()){
             board[point.getRowIndex()][point.getColIndex()] = Tile.getTileHit();
         }

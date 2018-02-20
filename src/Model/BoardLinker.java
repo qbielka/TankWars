@@ -21,7 +21,7 @@ public class BoardLinker {
         return tankList;
     }
     // violates Command Query Separation
-    public boolean isPlayerGuessHit(coordinate guess){
+    public boolean isPlayerGuessHit(Coordinate guess){
         if ( getCheatTile(guess)!= Tile.getTileBlank()){
             if(getDisplayBoardTile(guess)==Tile.getTileFog()) {
                 displayBoard.makeTileHit(guess);
@@ -31,11 +31,11 @@ public class BoardLinker {
         return false;
     }
 
-    public char getDisplayBoardTile(coordinate point){
+    public char getDisplayBoardTile(Coordinate point){
         return displayBoard.getTile(point);
     }
 
-    public char getCheatTile(coordinate point){
+    public char getCheatTile(Coordinate point){
         return secretBoard.getTile(point);
     }
 }
