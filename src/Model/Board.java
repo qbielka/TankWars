@@ -15,7 +15,7 @@ public class Board {
     private static final int RIGHT = 1;
     private static final int DOWN = 2;
     private static final int LEFT = 3;
-    public static final int MAX_TRIES_BEFORE_GIVE_UP = 20000;
+    private static final int MAX_TRIES_BEFORE_GIVE_UP = 20000;
 
     private char[][] board = new char[BOARD_SIZE][BOARD_SIZE];
     private List<Tank> tanks;
@@ -48,7 +48,7 @@ public class Board {
         }
 
         // make tanks drive onto field
-        List<Tank> mytanks = new ArrayList<>();// needs something extra
+        List<Tank> myTanks = new ArrayList<>();// needs something extra
 
 
         for(int tankNumber = 0; tankNumber < numTanks; tankNumber++) {
@@ -114,9 +114,9 @@ public class Board {
                     tetroidSize++;
                 }
             }
-            mytanks.add(toAdd);
+            myTanks.add(toAdd);
         }
-        toRet.tanks =mytanks;
+        toRet.tanks =myTanks;
         return toRet;
     }
 
