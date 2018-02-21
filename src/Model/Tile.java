@@ -2,7 +2,9 @@ package Model;
 
 /**
  * For Unification of Tiles over multiple classes
+ * @author Quince Bielka (qbielka), Emma Hughes (eha38)
  */
+
 public class Tile {
     private static final char TILE_BLANK = ' ';
     private static final char TILE_FOG = '~';

@@ -4,19 +4,19 @@ import Model.BoardLinker;
 import Model.Coordinate;
 
 /**
- * will display a given board to the UI
+ * Display a given board to the UI
+ * @author Quince Bielka (qbielka), Emma Hughes (eha38)
  */
+
 public class BoardDisplay {
-
-    private static final char COLUMN_TAG = 'a';
+    private static final char ROW_TAG = 'a';
     private static final int BOARD_SIZE = 10;
-
 
     public static void displayBoard(BoardLinker boards){
         Coordinate printPoint = new Coordinate(0,0);
         printBoardHeader();
         for(int count = 0; count < BOARD_SIZE; count++){
-            System.out.print((char)(COLUMN_TAG + count) + "  ");
+            System.out.print((char)( ROW_TAG + count) + "  ");
             for (int tileCount = 0; tileCount < 10; tileCount++) {
                 System.out.print(boards.getDisplayBoardTile(printPoint) + "  ");
                 printPoint.increment();
@@ -41,7 +41,7 @@ public class BoardDisplay {
         Coordinate printPoint = new Coordinate(0,0);
         printBoardHeader();
         for(int count = 0; count < BOARD_SIZE; count++){
-            System.out.print((char)(COLUMN_TAG + count) + "  ");
+            System.out.print((char)( ROW_TAG + count) + "  ");
             for (int tileCount = 0; tileCount < 10; tileCount++) {
                 System.out.print(boards.getCheatTile(printPoint) + "  ");
                 printPoint.increment();

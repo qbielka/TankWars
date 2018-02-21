@@ -5,9 +5,11 @@ import java.util.List;
 
 /**
  * Board maintains a state of the game
+ * @author Quince Bielka (qbielka), Emma Hughes (eha38)
  */
+
 public class Board {
-    private static final short BOARD_SIZE=10;
+    private static final short BOARD_SIZE = 10;
     private static final int UPPER_TANK_THRESHOLD = 25;
     private static final int MIDDLE_TANK_THRESHOLD = 20;
     private static final int TETROID_SIZE = 4;
@@ -15,13 +17,12 @@ public class Board {
     private static final int RIGHT = 1;
     private static final int DOWN = 2;
     private static final int LEFT = 3;
-    private static final int MAX_TRIES_BEFORE_GIVE_UP = 20000;
+    private static final int MAX_TRIES_BEFORE_GIVE_UP = 2000;
 
     private char[][] board = new char[BOARD_SIZE][BOARD_SIZE];
     private List<Tank> tanks;
 
-
-    // constructors and factory
+    // Constructors and factory
     private Board(){}
     public static Board makeDisplayBoard(){
         Board toRet= new Board();
@@ -33,18 +34,19 @@ public class Board {
         return toRet;
     }
 
-    public static Board makeSecretBoard(int numTanks) throws Exception {
-        Board toRet = makeBlankBoard(Tile.getTileBlank());
-        boundsCheck(numTanks);
+    public static Board makeSecretBoard(int numTanks) throws Exception { // TODO: Should throws Exception be here? -E
+        Board toRet = fillBoard(Tile.getTileBlank());
+        tankNumBoundsCheck(numTanks);
 
-        List<Tank> myTanks = new ArrayList<>();// needs something extra
+        List<Tank> myTanks = new ArrayList<>(); // TODO: needs something extra
 
         for(int tankNumber = 0; tankNumber < numTanks; tankNumber++) {
             List<Coordinate> aTank = new ArrayList<>();
+
             Int pStartCol = new Int(randomCoordinate());
             Int pStartRow = new Int(randomCoordinate());
 
-            findGoodSpot(toRet, pStartCol, pStartRow);
+            findLegalSpot(toRet, pStartCol, pStartRow);
 
             Tank tankToAdd = new Tank(aTank);
             Int tetroidSize = new Int(0);
@@ -55,30 +57,38 @@ public class Board {
             tetroidSize.wrapperInt++;
             makeTankFromSeed(toRet, tankNumber, aTank, tetroidSize);
             myTanks.add(tankToAdd);
+
         }
+
         toRet.tanks = myTanks;
+
+//        // Test
+//        for( int i = 0; i < myTanks.size(); i++ ){
+//            myTanks.get( i ).getIndex();
+//        }
+
         return toRet;
     }
 
-    private static void findGoodSpot(Board toRet, Int pStartCol, Int pStartRow) {
-        int numberOfTrys = 0;
+    private static void findLegalSpot( Board toRet, Int pStartCol, Int pStartRow) {
+        int numTries = 0;
 
         // while board position is a tank tile or if there's not enough space for a tank, then retry
-        while (isGoodLocation(toRet, pStartCol.wrapperInt, pStartRow.wrapperInt)) {
+        while (isLegalLocation(toRet, pStartCol.wrapperInt, pStartRow.wrapperInt)) {
             pStartCol.wrapperInt = randomCoordinate();
             pStartRow.wrapperInt = randomCoordinate();
-            numberOfTrys++;
+            numTries++;
 
             // If random check doesn't find empty spot, look through all spots
-            if( numberOfTrys >= MAX_TRIES_BEFORE_GIVE_UP) {
-                if (isNoPositions(toRet)) {
+            if( numTries == MAX_TRIES_BEFORE_GIVE_UP ){
+                if (isNoPositions(toRet)){
                     throw new IllegalArgumentException("Cannot place all tanks");
                 }
             }
         }
     }
 
-    private static void makeTankFromSeed(Board toRet, int tankNumber, List<Coordinate> aTank, Int tetroidSize) {
+    private static void makeTankFromSeed(Board toRet, int tankNumber, List<Coordinate> aTank, Int tetroidSize) { // TODO: Rename to growTank?
         Int currCol;
         Int currRow;
         while (tetroidSize.wrapperInt < TETROID_SIZE) {
@@ -117,7 +127,7 @@ public class Board {
         }
     }
 
-    private static boolean isGoodLocation(Board toRet, int pStartCol, int pStartRow) {
+    private static boolean isLegalLocation( Board toRet, int pStartCol, int pStartRow) {
         return toRet.board[pStartRow][pStartCol] == Tile.getTileTank() || !floodFillCheck(toRet.board, pStartRow, pStartCol);
     }
 
@@ -125,7 +135,7 @@ public class Board {
         return (int) (Math.random() * 10);
     }
 
-    private static void boundsCheck(int numTanks) {
+    private static void tankNumBoundsCheck( int numTanks) {
         if(numTanks > UPPER_TANK_THRESHOLD){
             throw new IllegalArgumentException("Too many Tanks");
         }else if(numTanks <= 0){
@@ -133,12 +143,12 @@ public class Board {
         }
     }
 
-    private static Board makeBlankBoard(char tileBlank) {
+    private static Board fillBoard( char tile) {
         Board toRet = new Board();
-        // initialize to blank
+
         for (int row = 0; row < BOARD_SIZE; row++) {
             for (int column = 0; column < BOARD_SIZE; column++) {
-                toRet.board[row][column] = tileBlank;
+                toRet.board[row][column] = tile;
             }
         }
         return toRet;
@@ -149,13 +159,12 @@ public class Board {
 
         for( int row = 0; row < BOARD_SIZE; row++ ){
             for( int column = 0; column < BOARD_SIZE; column++ ){
-                // If space available, set flag to true
+                // If space available, set bool flag to true
                 if( floodFillCheck(toRet.board, row, column) ) {
                     spaceAvailable = true;
                 }
             }
         }
-
 
         return !spaceAvailable;
     }
@@ -165,7 +174,7 @@ public class Board {
         aTank.add(new Coordinate(row, col));
     }
 
-    //helper for BoardLinker
+    // Helper for BoardLinker
     public char getTile(Coordinate point){
         return board[point.getRowIndex()][point.getColIndex()];
     }
@@ -221,7 +230,6 @@ public class Board {
         floodFill(thisBoard, floodRow, floodCol, sizeOfEmptySpace);
         return sizeOfEmptySpace.wrapperInt >= TETROID_SIZE;
     }
-
 }
 
 class Int {

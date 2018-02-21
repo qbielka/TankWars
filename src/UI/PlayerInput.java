@@ -5,8 +5,10 @@ import Model.Coordinate;
 import java.util.Scanner;
 
 /**
- * accepts player input and translates it to a coordinate for the Model Classes to use
+ * Accepts player input and translates it to a coordinate for the Model Classes to use
+ * @author Quince Bielka (qbielka), Emma Hughes (eha38)
  */
+
 public class PlayerInput {
 
 

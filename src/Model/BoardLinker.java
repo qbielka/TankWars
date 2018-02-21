@@ -1,29 +1,31 @@
 package Model;
 
-
 import java.util.List;
 
 /**
- * links a secret board and a displayable board together for game logic
+ * Links a secret board and a displayable board together for game logic
+ * @author Quince Bielka (qbielka), Emma Hughes (eha38)
  */
+
 public class BoardLinker {
     private Board secretBoard;
     private Board displayBoard;
     private List<Tank> tankList;
 
     public BoardLinker(int numTanks) throws Exception{
-        secretBoard=Board.makeSecretBoard(numTanks);
-        displayBoard=Board.makeDisplayBoard();
-        tankList=secretBoard.getTanks();
+        secretBoard = Board.makeSecretBoard(numTanks);
+        displayBoard = Board.makeDisplayBoard();
+        tankList = secretBoard.getTanks();
     }
 
     public List<Tank> getTankList(){
         return tankList;
     }
-    // violates Command Query Separation
+
+    // TODO: violates Command Query Separation
     public boolean isPlayerGuessHit(Coordinate guess){
-        if ( getCheatTile(guess)!= Tile.getTileBlank()){
-            if(getDisplayBoardTile(guess)==Tile.getTileFog()) {
+        if ( getCheatTile(guess) != Tile.getTileBlank()){
+            if(getDisplayBoardTile(guess) == Tile.getTileFog()) {
                 displayBoard.makeTileHit(guess);
                 return true;
             }

@@ -1,8 +1,10 @@
 package Model;
 
 /**
- * maintains a fortress hp holding a single instance
+ * Maintains a fortress hp holding a single instance
+ * @author Quince Bielka (qbielka), Emma Hughes (eha38)
  */
+
 public class Fortress {
     private static Fortress thisFortress;
     private static final int MAX_FORTRESS_HP = 1500;
