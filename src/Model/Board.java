@@ -34,11 +34,11 @@ public class Board {
         return toRet;
     }
 
-    public static Board makeSecretBoard(int numTanks) throws Exception { // TODO: Should throws Exception be here? -E
+    public static Board makeSecretBoard(int numTanks) throws Exception {
         Board toRet = fillBoard(Tile.getTileBlank());
         tankNumBoundsCheck(numTanks);
 
-        List<Tank> myTanks = new ArrayList<>(); // TODO: needs something extra
+        List<Tank> myTanks = new ArrayList<>();
 
         for(int tankNumber = 0; tankNumber < numTanks; tankNumber++) {
             List<Coordinate> aTank = new ArrayList<>();
@@ -55,7 +55,7 @@ public class Board {
 
             makePointTank(toRet, tankNumber, aTank, pStartCol.wrapperInt, pStartRow.wrapperInt);
             tetroidSize.wrapperInt++;
-            makeTankFromSeed(toRet, tankNumber, aTank, tetroidSize);
+            growTankFromSeed(toRet, tankNumber, aTank, tetroidSize);
             myTanks.add(tankToAdd);
 
         }
@@ -88,13 +88,13 @@ public class Board {
         }
     }
 
-    private static void makeTankFromSeed(Board toRet, int tankNumber, List<Coordinate> aTank, Int tetroidSize) { // TODO: Rename to growTank?
+    private static void growTankFromSeed(Board toRet, int tankNumber, List<Coordinate> aTank, Int tetroidSize) {
         Int currCol;
         Int currRow;
         while (tetroidSize.wrapperInt < TETROID_SIZE) {
             Int randomDirection = new Int((int) (Math.random() * 4));
             Int randomPiece = new Int((int) (Math.random() * aTank.size()));
-            currCol = new Int ( aTank.get(randomPiece.wrapperInt).getColIndex());
+            currCol = new Int (aTank.get(randomPiece.wrapperInt).getColIndex());
             currRow = new Int (aTank.get(randomPiece.wrapperInt).getRowIndex());
 
             if (randomDirection.wrapperInt == UP &&
@@ -135,7 +135,7 @@ public class Board {
         return (int) (Math.random() * 10);
     }
 
-    private static void tankNumBoundsCheck( int numTanks) {
+    private static void tankNumBoundsCheck( int numTanks) throws Exception{
         if(numTanks > UPPER_TANK_THRESHOLD){
             throw new IllegalArgumentException("Too many Tanks");
         }else if(numTanks <= 0){
