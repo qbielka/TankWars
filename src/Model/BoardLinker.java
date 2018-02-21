@@ -26,6 +26,7 @@ public class BoardLinker {
         if ( getCheatTile(guess) != Tile.getTileBlank()){
             if(getDisplayBoardTile(guess) == Tile.getTileFog()) {
                 displayBoard.makeTileHit(guess);
+                secretBoard.makeTileLowerCase(guess);
                 return true;
             }
         }

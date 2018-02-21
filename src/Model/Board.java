@@ -191,6 +191,9 @@ public class Board {
         }
     }
 
+    public void makeTileLowerCase(Coordinate point){
+        board[point.getRowIndex()][point.getColIndex()] = ((board[point.getRowIndex()][point.getColIndex()]+"").toLowerCase()).charAt(0);
+    }
     public List<Tank> getTanks(){
         return tanks;
     }
