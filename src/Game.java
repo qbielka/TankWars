@@ -1,11 +1,14 @@
 import Model.BoardLinker;
 import Model.Coordinate;
+import Model.Fortress;
 import Model.TankList;
 import UI.BoardDisplay;
+import UI.MasterDisplay;
 import UI.TankDisplay;
 
 
-import static UI.PlayerInput.getPlayerInput;
+import java.util.List;
+
 import static java.lang.Integer.parseInt;
 
 /**
@@ -44,8 +47,15 @@ public class Game {
             }
 
             TankList tanks = new TankList(linked.getTankList());
-
-            turn(numTanks, linked, tanks);
+            while (tanks.alive() && Fortress.getInstance().getFortressHP() != 0){
+                turn(linked, tanks);
+            }
+            if(Fortress.getInstance().getFortressHP() == 0){
+                MasterDisplay.loose(linked);
+            }
+            if(!tanks.alive()){
+                MasterDisplay.win(linked);
+            }
 
         }catch (Exception e){
             System.out.println(e.getMessage());
@@ -58,9 +68,10 @@ public class Game {
         return linked;
     }
 
-    private static void turn(int numTanks, BoardLinker linked, TankList tanks) throws Exception {
-        BoardDisplay.displayBoard(linked);
-        //Coordinate move = getPlayerInput();
-        TankDisplay.displayTankDamage(tanks.dealDamage());
+    private static void turn( BoardLinker linked, TankList tanks) throws Exception {
+        Coordinate move = MasterDisplay.displayStateAndGetInput(linked);
+        tanks.damageTank(move, linked);
+        List<Integer> damages = tanks.dealDamage();
+        MasterDisplay.displayPlayerTurn(damages);
     }
 }

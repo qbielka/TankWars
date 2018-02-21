@@ -8,7 +8,7 @@ import java.util.List;
  */
 
 public class Tank {
-    public static final int MAX_HEALTH = 4;
+    private static final int MAX_HEALTH = 4;
     private static final int MAX_DMG = 20;
     private static final int THREE_HIT_DMG = 5;
     private static final int TWO_HIT_DMG = 2;
@@ -33,6 +33,10 @@ public class Tank {
         if( health != 0 ){
             health--;
         }
+    }
+
+    public List<Coordinate> getSpaces() {
+        return index;
     }
 
     public int getDamage(){

@@ -9,13 +9,13 @@ import java.util.Scanner;
  * @author Quince Bielka (qbielka), Emma Hughes (eha38)
  */
 
-public class PlayerInput {
+class PlayerInput {
 
 
     private static final int STANDARD_LENGTH_RESPONSE = 2;
     private static final int BOARD_SIZE = 10;
 
-    public static Coordinate getPlayerInput() {
+    static Coordinate getPlayerInput() {
         String playerMoveString = "";
         char[] playerMoveCharArray = playerMoveString.toCharArray();
         playerMoveString = getInput(playerMoveString, playerMoveCharArray);
@@ -50,7 +50,7 @@ public class PlayerInput {
     }
 
     private static boolean isCharNum(char number){
-        return (number >= '0' && number < ('0' + BOARD_SIZE));
+        return (number >= '1' && number < ('0' + BOARD_SIZE));
     }
 
     private static boolean isCharLetter(char letter) {

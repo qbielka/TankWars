@@ -15,6 +15,10 @@ public class Coordinate {
         this.colIndex = colIndex;
     }
 
+    public boolean equals(Coordinate other){
+        return rowIndex == other.rowIndex && colIndex == other.colIndex;
+    }
+
     public void increment(){
         colIndex++;
         if(colIndex > MAX_COORDINATE){

@@ -185,6 +185,12 @@ public class Board {
         }
     }
 
+    public void makeTileBlank(Coordinate point){
+        if (board[point.getRowIndex()][point.getColIndex()] == Tile.getTileFog()){
+            board[point.getRowIndex()][point.getColIndex()] = Tile.getTileBlank();
+        }
+    }
+
     public List<Tank> getTanks(){
         return tanks;
     }
@@ -233,7 +239,7 @@ public class Board {
 }
 
 class Int {
-    public int wrapperInt = 0;
+    public int wrapperInt;
 
     Int(int item){
         wrapperInt = item;

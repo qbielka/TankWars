@@ -14,8 +14,6 @@ public class TankDisplay {
                 // Alive tank #1 of 5 shot you for 20!
                 System.out.println("Alive tank #" + (x + 1) +
                         " of " + damages.size() + " shot you for " + damages.get(x) + "!" );
-            }else {
-//                System.out.println("ERROR 0");
             }
         }
     }

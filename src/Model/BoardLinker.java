@@ -22,14 +22,14 @@ public class BoardLinker {
         return tankList;
     }
 
-    // TODO: violates Command Query Separation
-    public boolean isPlayerGuessHit(Coordinate guess){
+    public boolean fireAtPoint(Coordinate guess){
         if ( getCheatTile(guess) != Tile.getTileBlank()){
             if(getDisplayBoardTile(guess) == Tile.getTileFog()) {
                 displayBoard.makeTileHit(guess);
                 return true;
             }
         }
+        displayBoard.makeTileBlank(guess);
         return false;
     }
 
