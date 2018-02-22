@@ -60,13 +60,13 @@ public class Game{
         }
     }
 
-    private static BoardLinker cheat( int numTanks ) throws Exception{
+    private static BoardLinker cheat( int numTanks ){
         BoardLinker linked = new BoardLinker( numTanks );
         BoardDisplay.displaySecretBoard( linked );
         return linked;
     }
 
-    private static void turn( BoardLinker linked, TankList tanks ) throws Exception{
+    private static void turn( BoardLinker linked, TankList tanks ){
         Coordinate move = MasterDisplay.displayStateAndGetInput( linked );
         tanks.damageTank( move, linked );
         List<Integer> damages = tanks.dealDamage();
